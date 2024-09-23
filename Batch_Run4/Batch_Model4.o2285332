@@ -1,0 +1,54 @@
+{Unrecognized function or variable 'M'.
+
+Error in KFENV (line 28)
+            ObservationInfo = rlNumericSpec([M,1]);
+} 
+{Unrecognized function or variable 'env'.
+} 
+{Unrecognized function or variable 'env'.
+} 
+{Unable to resolve the name 'observationInfo.Dimension'.
+} 
+{Unrecognized function or variable 'env'.
+} 
+{Unable to resolve the name 'actionInfo.Dimension'.
+} 
+{Unrecognized function or variable 'numObservations'.
+} 
+{Unrecognized function or variable 'numActions'.
+} 
+{Unrecognized function or variable 'statePath'.
+} 
+{Unrecognized function or variable 'criticNetwork'.
+} 
+{Unrecognized function or variable 'criticNetwork'.
+} 
+{Unrecognized function or variable 'criticNetwork'.
+} 
+{Unrecognized function or variable 'numObservations'.
+} 
+{Unrecognized function or variable 'actorNetwork'.
+} 
+{Unrecognized function or variable 'actor'.
+} 
+{Unrecognized function or variable 'agent'.
+} 
+{Error using save
+Variable 'agent' not found.
+} 
+ 
+ 
++------------------------------------------+ 
+| PALMETTO CLUSTER PBS RESOURCES REQUESTED | 
++------------------------------------------+ 
+ 
+mem=125gb,walltime=50:00:00,ncpus=28
+ 
+ 
++-------------------------------------+ 
+| PALMETTO CLUSTER PBS RESOURCES USED | 
++-------------------------------------+ 
+ 
+cput=00:00:30,mem=2051792kb,walltime=00:00:41,ncpus=28,cpupercent=2,vmem=11415696kb
+ 
+ 
