@@ -1,0 +1,108 @@
+{Error using matlab.internal.cef.webwindow
+DISPLAY environment variable must be set to a valid X11 display.
+
+Error in matlab.internal.webwindow/createImplementation (line 327)
+                implObj = matlab.internal.cef.webwindow(varargin{:});
+
+Error in matlab.internal.webwindow (line 163)
+            obj.impl = obj.createImplementation(varargin{:});
+
+Error in matlab.ui.container.internal.AppContainer/buildWindow (line 2244)
+            window = matlab.internal.webwindow(url, this.getOpenPort());
+
+Error in matlab.ui.container.internal.AppContainer/set.Visible (line 733)
+                        this.Window = this.buildWindow(windowBounds);
+
+Error in rl.internal.episodeManager.EpisodeManager/show (line 125)
+            container.Visible = true;
+
+Error in rl.internal.episodeManager.EpisodeManager (line 99)
+            show(this)
+
+Error in rl.internal.episodeManager.util.createEpisodeManager (line 92)
+    episodeManager = rl.internal.episodeManager.EpisodeManager(emOptions,view);
+
+Error in rl.train.TrainingManager/initializeEpisodeManager (line 658)
+                    this.EpisodeMgr = rl.internal.episodeManager.util.createEpisodeManager( ...
+
+Error in rl.train.TrainingManager/preTrain (line 344)
+            initializeEpisodeManager(this,checkpoint);
+
+Error in rl.train.TrainingManager/run (line 252)
+            preTrain(this,checkpoint);
+
+Error in rl.agent.AbstractAgent/train (line 187)
+trainingResult = run(trainMgr,checkpoint);
+} 
+MATLAB: management.cpp:778: find: Assertion `find: no active context for type 'mltimer::TimerScheduler'' failed.
+
+--------------------------------------------------------------------------------
+                Assertion detected at 2024-04-15 02:13:35 -0400
+--------------------------------------------------------------------------------
+
+Configuration:
+  Crash Decoding           : Disabled - No sandbox or build area path
+  Crash Mode               : continue (default)
+  Default Encoding         : UTF-8
+  Deployed                 : false
+  GNU C Library            : 2.28 stable
+  Graphics Driver          : Uninitialized software 
+  Graphics card 1          : 0x102b ( 0x102b ) 0x534 Version 0.0.0.0 (0-0-0)
+  Java Version             : Java 1.8.0_202-b08 with Oracle Corporation Java HotSpot(TM) 64-Bit Server VM mixed mode
+  MATLAB Architecture      : glnxa64
+  MATLAB Entitlement ID    : 6289377
+  MATLAB Root              : /software/commercial/matlab/R2023b
+  MATLAB Version           : 23.2.0.2365128 (R2023b)
+  OpenGL                   : software
+  Operating System         : "Rocky Linux release 8.6 (Green Obsidian)"
+  Process ID               : 2558618
+  Processor ID             : x86 Family 6 Model 45 Stepping 7, GenuineIntel
+  Session Key              : dea78125-b304-4dd3-b924-692c29c54e72
+  Window System            : No active display
+
+Fault Count: 1
+
+
+Assertion in find at management.cpp line 778:
+find: no active context for type 'mltimer::TimerScheduler'
+
+Current Thread: 'TimerScheduler' id 22667686909696
+
+Register State (captured):
+  RAX = 0000000000000000  RBX = 0000149eec40dba1
+  RCX = 0000000000000000  RDX = 0000149eee746eb0
+  RSP = 0000149dbb6cf810  RBP = 0000149dbb6cfbf0
+  RSI = 0000149eee72d025  RDI = 0000149dbb6cf820
+
+   R8 = 0000000000000000   R9 = 0000149dbb6cfb00
+  R10 = 0000000000000000  R11 = 0000000000000000
+  R12 = 0000149eee74d2c8  R13 = 0000149eee75d348
+  R14 = 0000149eec40d904  R15 = 0000149dbb6d04f0
+
+  RIP = 0000149eee6dbd1f  EFL = 0000000000000000
+
+   CS = 0000   FS = 0000   GS = 0000
+
+Stack Trace (captured):
+[  0] 0x0000149eee6d5063 /software/commercial/matlab/R2023b/bin/glnxa64/libmwfl.so+00319587
+[  1] 0x0000149eee6d525c /software/commercial/matlab/R2023b/bin/glnxa64/libmwfl.so+00320092 _ZN10foundation4core4diag15stacktrace_base7captureEm+00000028
+[  2] 0x0000149eee6da121 /software/commercial/matlab/R2023b/bin/glnxa64/libmwfl.so+00340257
+[  3] 0x0000149eee6da1e0 /software/commercial/matlab/R2023b/bin/glnxa64/libmwfl.so+00340448
+[  4] 0x0000149eec3f8c63 /software/commercial/matlab/R2023b/bin/glnxa64/libmwfoundation_usm.so+00080995
+[  5] 0x0000149eec40b761 /software/commercial/matlab/R2023b/bin/glnxa64/libmwfoundation_usm.so+00157537 _ZN10foundation3usm6DetailINS0_5scope7ProcessEE4findEmRKSt9type_info+00000177
+[  6] 0x0000149d39fda9f2 /software/commercial/matlab/R2023b/bin/glnxa64/builtins/mltimer/../../../../bin/glnxa64/libmwmltimer_timer_src.so+00154098 _ZN10foundation3usm10thisthread12findOrInsertIN7mltimer14TimerSchedulerEJEEENS0_6traits13ReferenceTypeIT_E4TypeEDpOT0_+00000050
+[  7] 0x0000149d39fe581c /software/commercial/matlab/R2023b/bin/glnxa64/builtins/mltimer/../../../../bin/glnxa64/libmwmltimer_timer_src.so+00198684
+[  8] 0x0000149d39fe7834 /software/commercial/matlab/R2023b/bin/glnxa64/builtins/mltimer/../../../../bin/glnxa64/libmwmltimer_timer_src.so+00206900
+[  9] 0x0000149d39fe8898 /software/commercial/matlab/R2023b/bin/glnxa64/builtins/mltimer/../../../../bin/glnxa64/libmwmltimer_timer_src.so+00211096
+[ 10] 0x0000149d39fe02a7 /software/commercial/matlab/R2023b/bin/glnxa64/builtins/mltimer/../../../../bin/glnxa64/libmwmltimer_timer_src.so+00176807
+[ 11] 0x0000149d39fd7af2 /software/commercial/matlab/R2023b/bin/glnxa64/builtins/mltimer/../../../../bin/glnxa64/libmwmltimer_timer_src.so+00142066 _ZN7mltimer14TimerScheduler3runEv+00002962
+[ 12] 0x0000149eed360d10 /software/commercial/matlab/R2023b/bin/glnxa64/../../sys/os/glnxa64/libstdc++.so.6+00879888
+[ 13] 0x0000149eed4681cf                             /lib64/libpthread.so.0+00033231
+[ 14] 0x0000149eecee4dd3                                   /lib64/libc.so.6+00237011 clone+00000067
+
+** This crash report has been saved to disk as /home/pala/matlab_crash_dump.2558618-1 **
+
+
+
+MATLAB is exiting because of fatal error
+/var/spool/pbs/mom_priv/jobs/2285211.pbs02.SC: line 12: 2558618 Killed                  matlab -nodisplay -nosplash < EstDRLMain.m > RLEST0.txt

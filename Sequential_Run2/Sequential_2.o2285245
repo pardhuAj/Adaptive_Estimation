@@ -1,0 +1,132 @@
+{Error using rl.env.MATLABEnvironment/validateEnvironment
+Unable to evaluate step function.
+
+Caused by:
+    Unrecognized function or variable 'B'.
+} 
+{Error using matlab.internal.cef.webwindow
+DISPLAY environment variable must be set to a valid X11 display.
+
+Error in matlab.internal.webwindow/createImplementation (line 327)
+                implObj = matlab.internal.cef.webwindow(varargin{:});
+
+Error in matlab.internal.webwindow (line 163)
+            obj.impl = obj.createImplementation(varargin{:});
+
+Error in matlab.ui.container.internal.AppContainer/buildWindow (line 2244)
+            window = matlab.internal.webwindow(url, this.getOpenPort());
+
+Error in matlab.ui.container.internal.AppContainer/set.Visible (line 733)
+                        this.Window = this.buildWindow(windowBounds);
+
+Error in rl.internal.episodeManager.EpisodeManager/show (line 125)
+            container.Visible = true;
+
+Error in rl.internal.episodeManager.EpisodeManager (line 99)
+            show(this)
+
+Error in rl.internal.episodeManager.util.createEpisodeManager (line 92)
+    episodeManager = rl.internal.episodeManager.EpisodeManager(emOptions,view);
+
+Error in rl.train.TrainingManager/initializeEpisodeManager (line 658)
+                    this.EpisodeMgr = rl.internal.episodeManager.util.createEpisodeManager( ...
+
+Error in rl.train.TrainingManager/preTrain (line 344)
+            initializeEpisodeManager(this,checkpoint);
+
+Error in rl.train.TrainingManager/run (line 252)
+            preTrain(this,checkpoint);
+
+Error in rl.agent.AbstractAgent/train (line 187)
+trainingResult = run(trainMgr,checkpoint);
+} 
+MATLAB: management.cpp:778: find: Assertion `find: no active context for type 'mltimer::TimerScheduler'' failed.
+
+--------------------------------------------------------------------------------
+                Assertion detected at 2024-04-15 02:40:51 -0400
+--------------------------------------------------------------------------------
+
+Configuration:
+  Crash Decoding           : Disabled - No sandbox or build area path
+  Crash Mode               : continue (default)
+  Default Encoding         : UTF-8
+  Deployed                 : false
+  GNU C Library            : 2.28 stable
+  Graphics Driver          : Uninitialized software 
+  Graphics card 1          : 0x10de ( 0x10de ) 0x15f7 Version 525.125.6.0 (0-0-0)
+  Graphics card 2          : 0x102b ( 0x102b ) 0x534 Version 0.0.0.0 (0-0-0)
+  Graphics card 3          : 0x10de ( 0x10de ) 0x15f7 Version 525.125.6.0 (0-0-0)
+  Java Version             : Java 1.8.0_202-b08 with Oracle Corporation Java HotSpot(TM) 64-Bit Server VM mixed mode
+  MATLAB Architecture      : glnxa64
+  MATLAB Entitlement ID    : 6289377
+  MATLAB Root              : /software/commercial/matlab/R2023b
+  MATLAB Version           : 23.2.0.2365128 (R2023b)
+  OpenGL                   : software
+  Operating System         : "Rocky Linux release 8.6 (Green Obsidian)"
+  Process ID               : 4019817
+  Processor ID             : x86 Family 6 Model 79 Stepping 1, GenuineIntel
+  Session Key              : 1fb6976e-f231-4887-b119-92fe38f7cc18
+  Window System            : No active display
+
+Fault Count: 1
+
+
+Assertion in find at management.cpp line 778:
+find: no active context for type 'mltimer::TimerScheduler'
+
+Current Thread: 'TimerScheduler' id 22456598038272
+
+Register State (captured):
+  RAX = 0000000000000000  RBX = 0000146dcb169ba1
+  RCX = 0000000000000000  RDX = 0000146dcd4a3eb0
+  RSP = 0000146c958c6810  RBP = 0000146c958c6bf0
+  RSI = 0000146dcd48a025  RDI = 0000146c958c6820
+
+   R8 = 0000000000000000   R9 = 0000146c958c6b00
+  R10 = 0000000000000000  R11 = 0000000000000000
+  R12 = 0000146dcd4aa2c8  R13 = 0000146dcd4ba348
+  R14 = 0000146dcb169904  R15 = 0000146c958c74f0
+
+  RIP = 0000146dcd438d1f  EFL = 0000000000000000
+
+   CS = 0000   FS = 0000   GS = 0000
+
+Stack Trace (captured):
+[  0] 0x0000146dcd432063 /software/commercial/matlab/R2023b/bin/glnxa64/libmwfl.so+00319587
+[  1] 0x0000146dcd43225c /software/commercial/matlab/R2023b/bin/glnxa64/libmwfl.so+00320092 _ZN10foundation4core4diag15stacktrace_base7captureEm+00000028
+[  2] 0x0000146dcd437121 /software/commercial/matlab/R2023b/bin/glnxa64/libmwfl.so+00340257
+[  3] 0x0000146dcd4371e0 /software/commercial/matlab/R2023b/bin/glnxa64/libmwfl.so+00340448
+[  4] 0x0000146dcb154c63 /software/commercial/matlab/R2023b/bin/glnxa64/libmwfoundation_usm.so+00080995
+[  5] 0x0000146dcb167761 /software/commercial/matlab/R2023b/bin/glnxa64/libmwfoundation_usm.so+00157537 _ZN10foundation3usm6DetailINS0_5scope7ProcessEE4findEmRKSt9type_info+00000177
+[  6] 0x0000146bc1bf09f2 /software/commercial/matlab/R2023b/bin/glnxa64/builtins/mltimer/../../../../bin/glnxa64/libmwmltimer_timer_src.so+00154098 _ZN10foundation3usm10thisthread12findOrInsertIN7mltimer14TimerSchedulerEJEEENS0_6traits13ReferenceTypeIT_E4TypeEDpOT0_+00000050
+[  7] 0x0000146bc1bfb81c /software/commercial/matlab/R2023b/bin/glnxa64/builtins/mltimer/../../../../bin/glnxa64/libmwmltimer_timer_src.so+00198684
+[  8] 0x0000146bc1bfd834 /software/commercial/matlab/R2023b/bin/glnxa64/builtins/mltimer/../../../../bin/glnxa64/libmwmltimer_timer_src.so+00206900
+[  9] 0x0000146bc1bfe898 /software/commercial/matlab/R2023b/bin/glnxa64/builtins/mltimer/../../../../bin/glnxa64/libmwmltimer_timer_src.so+00211096
+[ 10] 0x0000146bc1bf62a7 /software/commercial/matlab/R2023b/bin/glnxa64/builtins/mltimer/../../../../bin/glnxa64/libmwmltimer_timer_src.so+00176807
+[ 11] 0x0000146bc1bedaf2 /software/commercial/matlab/R2023b/bin/glnxa64/builtins/mltimer/../../../../bin/glnxa64/libmwmltimer_timer_src.so+00142066 _ZN7mltimer14TimerScheduler3runEv+00002962
+[ 12] 0x0000146dcc0bcd10 /software/commercial/matlab/R2023b/bin/glnxa64/../../sys/os/glnxa64/libstdc++.so.6+00879888
+[ 13] 0x0000146dcc1c41cf                             /lib64/libpthread.so.0+00033231
+[ 14] 0x0000146dcbc40dd3                                   /lib64/libc.so.6+00237011 clone+00000067
+
+** This crash report has been saved to disk as /home/pala/matlab_crash_dump.4019817-1 **
+
+
+
+MATLAB is exiting because of fatal error
+/var/spool/pbs/mom_priv/jobs/2285245.pbs02.SC: line 14: 4019817 Killed                  matlab -nodisplay -nosplash < EstDRLMain.m > RLEST2.txt
+ 
+ 
++------------------------------------------+ 
+| PALMETTO CLUSTER PBS RESOURCES REQUESTED | 
++------------------------------------------+ 
+ 
+mem=125gb,walltime=50:00:00,ncpus=28
+ 
+ 
++-------------------------------------+ 
+| PALMETTO CLUSTER PBS RESOURCES USED | 
++-------------------------------------+ 
+ 
+cput=00:00:58,mem=2753248kb,walltime=00:01:04,ncpus=28,cpupercent=0,vmem=12927924kb
+ 
+ 
