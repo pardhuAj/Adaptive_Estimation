@@ -1,0 +1,10 @@
+
+#PBS -N RLEST0
+#PBS -l select=1:ncpus=36:mem=1500gb
+#PBS -q bigmem
+#PBS -l walltime=72:00:00
+
+module add matlab/2023b
+
+cd /scratch/pala/RL_estimation/Run0
+matlab -nodisplay -nosplash -batch EstDRLMain.m > RLEST0.txt

@@ -1,0 +1,116 @@
+clc
+clear all
+%% Data
+nsteps = 1001;
+nepisodes = 1000;
+
+inputs.nsteps = nsteps;
+inputs.Ts = 0.1;
+% load('y.mat')
+% inputs.y = y;
+
+%% Validate Environment
+env=KFENV(inputs);
+validateEnvironment(env);
+
+observationInfo = getObservationInfo(env);
+numObservations = observationInfo.Dimension(1);
+actionInfo = getActionInfo(env);
+numActions = actionInfo.Dimension(1);
+
+%%
+
+%L = 90; % number of neurons
+statePath = [
+    featureInputLayer(numObservations,'Normalization','none','Name','observation')
+    fullyConnectedLayer(50,'Name','fc1')
+    additionLayer(2,'Name','add')
+    reluLayer('Name','relu1')
+    fullyConnectedLayer(25,'Name','fc3')
+    reluLayer('Name','relu2')
+    fullyConnectedLayer(5,'Name','fc2')
+    fullyConnectedLayer(1,'Name','fc9')];
+    
+actionPath = [featureInputLayer(numActions,'Normalization','none','Name','action')
+    fullyConnectedLayer(50,'Name','fc10')];
+
+criticNetwork = layerGraph(statePath);
+criticNetwork = addLayers(criticNetwork,actionPath);
+    
+criticNetwork = connectLayers(criticNetwork,'fc10','add/in2');
+
+
+%%
+
+criticOptions = rlRepresentationOptions('LearnRate',1e-3,'GradientThreshold',1,'L2RegularizationFactor',1e-3);
+
+critic = rlQValueRepresentation(criticNetwork,observationInfo,actionInfo,...
+    'Observation',{'observation'},'Action',{'action'},criticOptions);
+
+%%
+
+actorNetwork = [
+    featureInputLayer(numObservations,'Normalization','none','Name','observation')
+    reluLayer('Name','relu1')
+    fullyConnectedLayer(50,'Name','fc1')
+    reluLayer('Name','relu2')
+    fullyConnectedLayer(25,'Name','fc7')
+    reluLayer('Name','relu3')
+    fullyConnectedLayer(5,'Name','fc8')
+    reluLayer('Name','relu4')
+    fullyConnectedLayer(2,'Name','fc9')
+    tanhLayer('Name','tanh1')
+    
+    scalingLayer('Name','ActorScaling1','Scale',[0.49995;0.49995],'Bias',[0.50005;0.50005])];
+    %scalingLayer('Name','ActorScaling1','Scale',actionInfo.UpperLimit-actionInfo.LowerLimit,'Bias',(actionInfo.UpperLimit-actionInfo.LowerLimit)/2)];
+
+%%
+
+actorOptions = rlRepresentationOptions('LearnRate',1e-3,'GradientThreshold',1,'L2RegularizationFactor',1e-3);
+actor = rlDeterministicActorRepresentation(actorNetwork,observationInfo,actionInfo,...
+    'Observation',{'observation'},'Action',{'ActorScaling1'},actorOptions);
+
+%%
+
+%agentOptions = rlDDPGAgentOptions(...
+agentOptions = rlTD3AgentOptions(...
+    'SampleTime',inputs.Ts,...
+    'TargetSmoothFactor',1e-3,...
+    'ExperienceBufferLength',10000,...
+    'DiscountFactor',0.99,...
+    'MiniBatchSize',512);
+
+agentOptions.ExplorationModel.VarianceMin = 0.0001;
+agentOptions.ExplorationModel.Variance = (0.01)^2*ones(2,1);
+agentOptions.ExplorationModel.VarianceDecayRate = 1e-3;
+
+%%
+
+agent = rlTD3Agent(actor,critic,agentOptions);
+%%
+maxepisodes = nepisodes;
+maxsteps = nsteps;
+trainingOpts = rlTrainingOptions('MaxEpisodes',maxepisodes,'MaxStepsPerEpisode',maxsteps,'Verbose',true,'StopTrainingCriteria','EpisodeCount','StopTrainingValue',maxepisodes,'Plots',"none");
+
+%trainOpts.UseParallel = true;
+%trainOpts.ParallelizationOptions.Mode = 'async';
+%trainOpts.ParallelizationOptions.StepsUntilDataIsSent = 32;
+%trainOpts.ParallelizationOptions.DataToSendFromWorkers = 'Experiences';
+
+%%
+trainingStats = train(agent,env,trainingOpts);
+
+%%
+
+save("EstDRL1.mat",'agent')
+%%
+load("EstDRL1.mat");
+simOpts = rlSimulationOptions('MaxSteps',nsteps);
+experience = sim(env,agent,simOpts);
+QR = squeeze(experience.Action.Covariances.Data);
+figure(1)
+plot(QR(1,:))
+figure(2)
+plot(QR(2,:))
+grid minor
+
