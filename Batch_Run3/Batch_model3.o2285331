@@ -1,0 +1,41 @@
+{Error using rl.representation.rlDeterministicActorRepresentation/validateActionOutputDimension
+Deterministic model input sizes must match the dimensions specified in the
+corresponding action info specification.
+
+Error in rl.representation.rlDeterministicActorRepresentation (line 18)
+            validateActionOutputDimension(this)
+
+Error in rlDeterministicActorRepresentation (line 88)
+Rep = rl.representation.rlDeterministicActorRepresentation(...
+} 
+{Unrecognized function or variable 'actor'.
+} 
+{Unrecognized function or variable 'agent'.
+} 
+{Error using save
+Variable 'agent' not found.
+} 
+{Unrecognized function or variable 'agent'.
+} 
+{Unable to resolve the name 'experience.Action.Covariances.Data'.
+} 
+{Unrecognized function or variable 'QR'.
+} 
+{Unrecognized function or variable 'QR'.
+} 
+ 
+ 
++------------------------------------------+ 
+| PALMETTO CLUSTER PBS RESOURCES REQUESTED | 
++------------------------------------------+ 
+ 
+mem=125gb,walltime=50:00:00,ncpus=28
+ 
+ 
++-------------------------------------+ 
+| PALMETTO CLUSTER PBS RESOURCES USED | 
++-------------------------------------+ 
+ 
+cput=00:00:47,mem=2409768kb,walltime=00:00:54,ncpus=28,cpupercent=42,vmem=12234796kb
+ 
+ 

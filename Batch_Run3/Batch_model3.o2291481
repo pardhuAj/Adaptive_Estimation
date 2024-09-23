@@ -1,0 +1,95 @@
+{Error using rl.env.MATLABEnvironment/validateEnvironment
+Environment 'ObservationInfo' does not match observation output from reset
+function. Check the data type, dimensions, and range.
+} 
+{Error using rl.train.SeriesTrainer/run
+There was an error executing the ProcessExperienceFcn.
+
+Caused by:
+	Error using rl.function.AbstractFunction/validateInputData_
+	Input data dimensions must match the dimensions specified in the
+    corresponding
+	observation and action info specifications.
+
+	Error in rl.function.AbstractFunction/evaluate (line 71)
+	                validateInputData_(this, inputData);
+
+	Error in rl.function.rlContinuousDeterministicActor/getAction_ (line 32)
+	            [action, state] = evaluate(this, observation);
+
+	Error in rl.function.AbstractActorFunction/getAction (line 79)
+	            [action, state] = getAction_(this, observation);
+
+	Error in rl.policy.rlAdditiveNoisePolicy/getAction_ (line 129)
+	            [action,state] = getAction(this.Actor,observation);
+
+	Error in rl.policy.PolicyInterface/getAction (line 36)
+	            [action,this] = getAction_(this,observation);
+
+	Error in rl.agent.AbstractOffPolicyAgent/getExplorationAction_ (line 116)
+	            [action,this.ExplorationPolicy_] =
+                getAction(this.ExplorationPolicy_,...
+
+	Error in rl.agent.AbstractAgent/getAction_ (line 90)
+	                [action,this] = getExplorationAction_(this,observation);
+
+	Error in rl.policy.PolicyInterface/getAction (line 36)
+	            [action,this] = getAction_(this,observation);
+
+	Error in rl.env.internal.PolicyExperienceProcessorInterface/evaluateAction_
+    (line 32)
+	            [action,this.Policy_] = getAction(this.Policy_,observation);
+
+	Error in rl.env.internal.ExperienceProcessorInterface/evaluateAction (line
+    62)
+	                action = evaluateAction_(this,observation);
+
+	Error in rl.env.internal.MATLABSimulator/simInternal_ (line 109)
+	                    act = evaluateAction(expProcessor,obs);
+
+	Error in rl.env.internal.MATLABSimulator/sim_ (line 67)
+	                out = simInternal_(this,simPkg);
+
+	Error in rl.env.internal.AbstractSimulator/sim (line 30)
+	            out = sim_(this,simData,policy,processExpFcn,processExpData);
+
+	Error in rl.env.AbstractEnv/runEpisode (line 144)
+	    out = sim(simulator,simData,policy,processExpFcn,processExpData);
+
+	Error in rl.train.SeriesTrainer/run (line 64)
+	                out = runEpisode(...
+
+	Error in rl.train.TrainingManager/train (line 516)
+	            run(trainer);
+
+	Error in rl.train.TrainingManager/run (line 253)
+	            train(this);
+
+	Error in rl.agent.AbstractAgent/train (line 187)
+	trainingResult = run(trainMgr,checkpoint);
+
+Error in rl.train.TrainingManager/train (line 516)
+            run(trainer);
+
+Error in rl.train.TrainingManager/run (line 253)
+            train(this);
+
+Error in rl.agent.AbstractAgent/train (line 187)
+trainingResult = run(trainMgr,checkpoint);
+} 
+ 
+ 
++------------------------------------------+ 
+| PALMETTO CLUSTER PBS RESOURCES REQUESTED | 
++------------------------------------------+ 
+ 
+mem=23gb,walltime=50:00:00,ncpus=8
+ 
+ 
++-------------------------------------+ 
+| PALMETTO CLUSTER PBS RESOURCES USED | 
++-------------------------------------+ 
+ 
+cput=00:00:57,mem=2353356kb,walltime=00:01:05,ncpus=8,cpupercent=0,vmem=9762036kb
+ 
+ 
