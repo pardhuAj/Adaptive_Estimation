@@ -1,1 +1,8 @@
-code 
+# RL Estimation Code Repo
+
+### Feb 1, 2025
+Notes:
+Python code for RL is added.
+The code needs debuggin in general.
+The learning loop needs to be changed. Q,R cannot be introuduced as actions at every timestep. This will result in the process being non-stationary. The essential work around is to initialize an entire stream of measurements during the reset and use those measurements in the RL loop. Onces the Q,R settle to a value, it can be used in the actual filtering loop. 
+
