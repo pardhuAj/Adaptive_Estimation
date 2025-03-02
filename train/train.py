@@ -22,6 +22,8 @@ import sys
 sys.path.insert(0, "/home/asalvi/code_workspace/RL_AdpEst/train/AdaptiveRL-gym")
 import adptRL_gym
 
+sys.path.insert(0, "/home/asalvi/code_workspace/RL_AdpEst/train/AdaptiveRL-gym/adptRL_gym/envs/")
+
 
 #from adaptive_rl_env import AdaptiveRLEnv  # Make sure this path is correct
 
@@ -31,7 +33,7 @@ variant = 'AdaptiveRL_test'
 os.makedirs(tmp_path, exist_ok=True)
 new_logger = configure(tmp_path, ["stdout", "csv", "tensorboard"])
 
-total_timesteps = 1e5
+total_timesteps = 1e6
 
 
 # Callback Definitions
@@ -68,26 +70,43 @@ class SaveOnBestTrainingRewardCallback(BaseCallback):
 
 # Create environment in multi-process mode
 def make_env(env_id, rank, seed=0):
+    """
+    Utility function to create an environment with unique parameters per process.
+
+    :param env_id: (str) The environment ID
+    :param rank: (int) Unique process rank
+    :param seed: (int) Random seed for reproducibility
+    """
     def _init():
-        env = gym.make(env_id,seed=seed + rank)  # Directly instantiate your environment
-        env = Monitor(env)  # Optional: Wrap it with Monitor to log statistics
+        #port_no = str(24000 + 2 * rank)  # Unique port assignment (adjust as needed)
+        #print(f"Initializing env {rank} on port {port_no}")
+
+        env = gym.make(env_id, seed=seed + rank)
+        env = Monitor(env)  # Monitor logs stats for training analysis
         return env
+
     return _init
 
 
 if __name__ == '__main__':
     env_id = "adptRL_gym/adptRL-v0"
-    num_envs = 8  # Number of parallel environments, you can keep it as 1 or more
-    env = DummyVecEnv([make_env(env_id, i) for i in range(num_envs)])
+    num_envs = 16  # Number of parallel environments
 
-    # Callbacks for saving the model and checkpointing
+    # ✅ **Multi-process environment setup with consistent wrapping**
+
+    env = SubprocVecEnv([make_env(env_id, i) for i in range(num_envs)], start_method='fork')
+    #env = DummyVecEnv([make_env(env_id, i) for i in range(num_envs)])
+    env = VecMonitor(env, filename=tmp_path)  # Logs training stats
+    env = VecNormalize(env, training=True, norm_obs=True, norm_reward=True, clip_obs=10.0, clip_reward=1000.0, gamma=0.99)
+
+    # ✅ **Callbacks for checkpointing & progress monitoring**
     best_callback = SaveOnBestTrainingRewardCallback(check_freq=1000, log_dir=tmp_path)
-    checkpoint_callback = CheckpointCallback(save_freq=78125, save_path=tmp_path + "checkpoints/", name_prefix=variant, save_replay_buffer=True, save_vecnormalize=True)
-    callback = CallbackList([best_callback, checkpoint_callback,ProgressBarCallback()])
+    checkpoint_callback = CheckpointCallback(save_freq=50000, save_path=tmp_path + "checkpoints/", name_prefix=variant, save_replay_buffer=True, save_vecnormalize=True)
+    callback = CallbackList([best_callback, checkpoint_callback, ProgressBarCallback()])
 
-    # Define the PPO model
+    # ✅ **PPO Model Configuration (Matching Structure to HuskyRL)**
     model = PPO(
-        "MlpPolicy",  # Using MLP policy since your environment doesn't use images
+        "MlpPolicy",  # Using MLP policy since the environment does not require images
         env,
         learning_rate=0.0001,
         n_steps=512,
@@ -101,23 +120,23 @@ if __name__ == '__main__':
         max_grad_norm=0.5,
         sde_sample_freq=16,
         policy_kwargs=dict(
-            net_arch=dict(pi=[64], vf=[64]),  # MLP architecture for PPO
+            net_arch=dict(pi=[64], vf=[64]),  # Consistent network architecture
             activation_fn=nn.ReLU
         ),
         verbose=1,
         tensorboard_log=tmp_path
     )
 
-    # Set the custom logger
+    # ✅ **Apply Custom Logger**
     model.set_logger(new_logger)
 
-    # Start training
-    model.learn(total_timesteps=int(total_timesteps), callback=callback, progress_bar=True)
+    # ✅ **Start Training**
+    model.learn(total_timesteps=int(total_timesteps), callback=callback, progress_bar=False)
 
-    # Save the final model
+    # ✅ **Save Final Model**
     model.save(tmp_path + variant)
 
-    # Example of running the model after training
+    # ✅ **Example Post-Training Evaluation**
     obs = env.reset()
     for _ in range(1000):
         action, _states = model.predict(obs)

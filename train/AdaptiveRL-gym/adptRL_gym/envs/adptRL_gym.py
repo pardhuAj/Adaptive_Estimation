@@ -68,6 +68,14 @@ class AdaptiveRLEnv(Env):
     def reset(self, seed=None):
         super().reset(seed=self.seed)
 
+        self.M = 1000
+        self.delta = []
+        self.Q = 0.0001
+        self.R = 0.0001
+
+        self.Q = 0.49995*0 + 0.50005
+        self.R = 0.49995*0 + 0.50005
+
         # Send observation for learning
         self.delta = self.filterModel(self.Q, self.R, self.M)
         #self.delta = np.clip(self.delta, -10, 10) 
@@ -164,6 +172,8 @@ class AdaptiveRLEnv(Env):
         # Adjust C_est size based on reduced time dimension
         C_est = torch.zeros((vk.shape[0], vk.shape[0], M), device=device)
 
+        M = min(100, len(time) - 1)  # Ensure we don’t exceed the time steps
+        C_est = torch.zeros((M,1), device=device)  # Expecting a (1, 100) output
         # Vectorized GPU-based calculation for covariance samples
         for i in range(M):
             # Ensure both tensors have shape [1, 901] for each i
@@ -173,10 +183,18 @@ class AdaptiveRLEnv(Env):
             print(f"nu[:, i:i + reduced_size] shape: {nu[:, i:i + reduced_size].shape}")
 
             # Adjust covariance calculation for truncated dimensions
-            C_est[:, :, i] = torch.einsum('ij,ik->jk', nu[:, :reduced_size], nu[:, i:i + reduced_size]) / reduced_size
+            C_est[:, i] = (nu[:, i:i + reduced_size] @ nu[:, :reduced_size].T) / reduced_size
 
         # Move back to CPU if necessary
-        return C_est.cpu().numpy() if device.type == "cuda" else C_est.numpy()
+        print(C_est.shape)
+        return C_est.cpu().numpy().squeeze() if device.type == "cuda" else C_est.numpy().squeeze()
+    
+    def plant_dyn(self, dt):
+        A = np.array([[1, dt], 
+                    [0, 1]])
+        B = np.array([[0.5 * dt**2], 
+                    [dt]])  
+        return A, B
 
 
 
