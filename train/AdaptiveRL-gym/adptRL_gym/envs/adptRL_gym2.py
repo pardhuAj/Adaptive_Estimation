@@ -118,7 +118,7 @@ class AdaptiveRLEnv(Env):
     def reset(self, seed=None):
         super().reset(seed = seed)
 
-        self.episode_length = 1000
+        self.episode_length = 100
         self.step_no +=0
 
         #Initializations

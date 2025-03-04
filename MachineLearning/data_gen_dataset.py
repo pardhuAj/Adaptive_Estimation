@@ -71,7 +71,7 @@ class DataGenerator:
             "R_true": R_true,
         }
 
-    def generate_dataset(self, save_path="kalman_dataset.pkl"):
+    def generate_dataset(self, save_path="kalman_dataset_validation.pkl"):
         """Generates and saves the dataset."""
         dataset = []
         

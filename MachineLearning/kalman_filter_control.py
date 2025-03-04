@@ -81,7 +81,7 @@ class KalmanFilterWithControl:
         #print(f"y shape: {self.y.shape}")
         self.predy =  np.dot(H, self.x)
         self.S = np.dot(H, np.dot(self.P, H.T)) + self.R  # Residual covariance
-        self.S = self.S.item()
+        self.S = self.S.item() + 1e-6 #Adding an extremely small epsilon
         #print(f"S is{self.S}")
         #K = np.dot(self.P, np.dot(H.T, np.array([np.linalg.inv(self.S)])))  # Kalman Gain
         K = np.dot(self.P, np.dot(H.T, 1/self.S)) # Kalman Gain
