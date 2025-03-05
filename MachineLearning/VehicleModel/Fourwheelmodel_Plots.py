@@ -5,9 +5,9 @@ from nonlintire import nonlintire
 import matplotlib.pyplot as plt
 
 class fourwheel_model:
-    def __init__(self):
+    def __init__(self,velocity,randM,randIz):
         # Vehicle Parameters 0f BMW 535 Xi
-        self.m = 1740.2  # kg
+        self.m = 1740.2 + randM # kg
         self.E = 1.555  # Track width in m
         self.l = 2.885  # Wheelbase
         self.lf = 0.5025 * self.l  # CG distance to front in m
@@ -20,8 +20,9 @@ class fourwheel_model:
         self.kr = 0.34  # Roll stiffness rear in % (41.13 N/mm)
         self.KR = 50000  # Total roll stiffness in Nm/rad
         self.CR = 3500  # Total roll damping in Nms/rad
-        self.Iz = 3326  # Yaw plane moment of inertia
+        self.Iz = 3326 + randIz  # Yaw plane moment of inertia
         self.Ix = 679  # Roll plane moment of inertia
+        self.Velocity = velocity
         
         self.SR = 15; # Steering ratio
         self.x =[] # Initial Conditions for States
@@ -154,20 +155,20 @@ class fourwheel_model:
 
     def run_simulation(self,id):
         if id ==1:
-            T, delta_t = 26, 0.001
+            T, delta_t = 25, 0.01
             time = np.linspace(0, T, int(T / delta_t) + 1)
             delta_sw, deltavec = self.fishhook(time, delta_t) # Steering input
-            EntrySpeed = 50 * 1.609 / 3.6 # Initial speed in m/s
+            EntrySpeed = self.Velocity
         elif id ==2:
-            T, delta_t = 75, 0.001
+            T, delta_t = 75, 0.01
             time = np.linspace(0, T, int(T / delta_t) + 1)
             delta_sw, deltavec = self.Constant_Steering(time, delta_t) # Steering input
-            EntrySpeed = 74 * 1.609 / 3.6 # Initial speed in m/s
+            EntrySpeed = self.Velocity
         else:
-            T, delta_t = 20, 0.001
+            T, delta_t = 20, 0.01
             time = np.linspace(0, T, int(T / delta_t) + 1)
             delta_sw, deltavec = self.slalom_steering(time) # Steering input in rad
-            EntrySpeed = 60 * 1.609 / 3.6
+            EntrySpeed = self.Velocity
 
         x = np.zeros((10, len(time))) # Initialization of state vector
         x[:, 0] = [0, 0, EntrySpeed, EntrySpeed, 0, 0, 0, 0, 0, 0] # Initial states
@@ -177,7 +178,16 @@ class fourwheel_model:
             x[:, i + 1] = x[:, i] + delta_t * xdot
         
         #self.plot_results(time, x, deltavec)
-        return time, x, deltavec,ay
+            
+        return {
+            "time" : time,
+            "x" : x,  # Added simulated measurements
+            "deltavec" : deltavec,
+            "ay" : ay,
+              # Store for logging
+        }
+        #return time, x, deltavec,ay
+    
 
     def plot_results(self,time, x,deltavec):
         # Global velocity vector, vehicle heading direction and global position of CG
@@ -210,7 +220,7 @@ class fourwheel_model:
         
         for i in range(5):
             for j in range(2):
-                axs[i, j].plot(time, np.rad2deg(x[i * 2 + j, :]))
+                axs[i, j].plot(time, (x[i * 2 + j, :]))
                 axs[i, j].set_title(titles[i * 2 + j])
                 axs[i, j].set(xlabel='Time (s)')
                 axs[i, j].grid()
@@ -229,7 +239,11 @@ class fourwheel_model:
         plt.show()
 
 if __name__ == "__main__":
-    model = fourwheel_model()
+    randM = np.random.uniform(0,500)
+    randIz = np.random.uniform(0,100)
+    print(f"Rand M is:{randM}")
+    print(f"Rand Iz is:{randIz}")
+    model = fourwheel_model(randM,randIz)
     fishhook = model.run_simulation(1)
     #constant_steering = model.run_simulation(2) 
     #slalom = model.run_simulation(3)

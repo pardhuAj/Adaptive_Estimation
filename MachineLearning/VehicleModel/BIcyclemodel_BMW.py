@@ -91,20 +91,20 @@ class VehicleModel:
 
     def run_simulation(self,id):
         if id ==1:
-            T, delta_t = 26, 0.001
+            T, delta_t = 25, 0.01
             time = np.linspace(0, T, int(T / delta_t) + 1)
             delta_sw, deltavec = self.fishhook(time, delta_t) # Steering input
-            EntrySpeed = self.vel*1.609/3.6 # Initial speed in m/s
+            EntrySpeed = self.vel # Initial speed in m/s
         elif id ==2:
-            T, delta_t = 75, 0.001
+            T, delta_t = 75, 0.01
             time = np.linspace(0, T, int(T / delta_t) + 1)
             delta_sw, deltavec = self.Constant_Steering(time, delta_t) # Steering input
-            EntrySpeed = self.vel * 1.609 / 3.6 # Initial speed in m/s
+            EntrySpeed = self.vel # Initial speed in m/s
         else:
-            T, delta_t = 20, 0.001
+            T, delta_t = 20, 0.01
             time = np.linspace(0, T, int(T / delta_t) + 1)
             delta_sw, deltavec = self.slalom_steering(time) # Steering input in rad
-            EntrySpeed = self.vel * 1.609 / 3.6
+            EntrySpeed = self.vel
 
         x = np.zeros((5, len(time))) # Initialization of state vector
         x[:, 0] = [ 0, 0, 0, 0, 0] # Initial states
@@ -119,7 +119,17 @@ class VehicleModel:
         
         #self.plot_results(time, x, deltavec,alphar,alphaf,v)
 
-        return time, x, deltavec,ay,alphar,alphaf
+        return {
+            "time": time,
+            "x": x,  # Added simulated measurements
+            "deltavec": deltavec,
+            "ay": ay,
+            "alphar" : alphar,
+            "alphaf" : alphaf
+              # Store for logging
+        }
+
+        #return time, x, deltavec,ay,alphar,alphaf
 
     def plot_results(self,time, x,deltavec,v,alphar, alphaf):
         # Global velocity vector, vehicle heading direction and global position of CG
@@ -151,7 +161,7 @@ class VehicleModel:
         
         for i in range(5):
             for j in range(2):
-                axs[i, j].plot(time, np.rad2deg(x[i * 2 + j, :]))
+                axs[i, j].plot(time, (x[i * 2 + j, :]))
                 axs[i, j].set_title(titles[i * 2 + j])
                 axs[i, j].set(xlabel='Time (s)')
                 axs[i, j].grid()
