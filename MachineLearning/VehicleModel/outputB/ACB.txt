@@ -1,0 +1,28 @@
+Creating output file.
+Training variant is:ACBStarting Training for 25 epochs...
+Epoch 1/25 - Avg Loss: 0.013311 - Time: 229.59s
+Epoch 2/25 - Avg Loss: 0.003203 - Time: 218.58s
+Epoch 3/25 - Avg Loss: 0.002800 - Time: 227.02s
+Epoch 4/25 - Avg Loss: 0.002589 - Time: 237.72s
+Epoch 5/25 - Avg Loss: 0.002440 - Time: 242.23s
+Epoch 6/25 - Avg Loss: 0.002444 - Time: 216.47s
+Epoch 7/25 - Avg Loss: 0.002469 - Time: 222.12s
+Epoch 8/25 - Avg Loss: 0.002323 - Time: 225.67s
+Epoch 9/25 - Avg Loss: 0.002261 - Time: 215.18s
+Epoch 10/25 - Avg Loss: 0.002246 - Time: 215.36s
+Epoch 11/25 - Avg Loss: 0.002128 - Time: 214.63s
+Epoch 12/25 - Avg Loss: 0.002206 - Time: 214.52s
+Epoch 13/25 - Avg Loss: 0.002183 - Time: 214.77s
+Epoch 14/25 - Avg Loss: 0.002140 - Time: 214.57s
+Epoch 15/25 - Avg Loss: 0.002076 - Time: 214.56s
+Epoch 16/25 - Avg Loss: 0.001902 - Time: 214.68s
+Epoch 17/25 - Avg Loss: 0.001759 - Time: 214.51s
+Epoch 18/25 - Avg Loss: 0.001966 - Time: 214.51s
+Epoch 19/25 - Avg Loss: 0.001786 - Time: 214.39s
+Epoch 20/25 - Avg Loss: 0.001791 - Time: 214.30s
+Epoch 21/25 - Avg Loss: 0.001681 - Time: 214.55s
+Epoch 22/25 - Avg Loss: 0.001879 - Time: 244.26s
+Epoch 23/25 - Avg Loss: 0.001695 - Time: 218.45s
+Epoch 24/25 - Avg Loss: 0.001538 - Time: 238.83s
+Epoch 25/25 - Avg Loss: 0.001818 - Time: 215.59s
+Model saved as ACB_kalman_nn.pth

@@ -1,6 +1,6 @@
 import numpy as np
 import sys
-sys.path.insert(0, "/home/asalvi/code_workspace/RL_AdpEst/MachineLearning/")
+sys.path.insert(0, "/home/asalvi/code_workspace/RL_AdpEst/MachineLearning/VehicleModel/")
 from nonlintire import nonlintire
 import matplotlib.pyplot as plt
 
@@ -243,7 +243,7 @@ if __name__ == "__main__":
     randIz = np.random.uniform(0,100)
     print(f"Rand M is:{randM}")
     print(f"Rand Iz is:{randIz}")
-    model = fourwheel_model(randM,randIz)
+    model = fourwheel_model(25,randM,randIz)
     fishhook = model.run_simulation(1)
     #constant_steering = model.run_simulation(2) 
     #slalom = model.run_simulation(3)

@@ -10,12 +10,12 @@ from matplotlib import pyplot as plt
 
 import sys
 sys.path.insert(0, "/home/asalvi/code_workspace/RL_AdpEst/MachineLearning/VehicleModel/")
-from kalman_filter_control import KalmanFilterWithControl
-from sample_autocorrelation import SampleAutocorrelation 
-from nis_ import NIS
+from VDkalman_filter_control import KalmanFilterWithControl
+from VDsample_autocorrelation import SampleAutocorrelation 
+from VDnis_ import NIS
 
-from Fourwheelmodel_Plots import fourwheel_model
-from BIcyclemodel_BMW import VehicleModel
+from VDFourwheelmodel_Plots import fourwheel_model
+from VDBIcyclemodel_BMW import VehicleModel
 
 class LabelQR:
     def __init__(self,MassRand,InertiaRand):
@@ -43,7 +43,10 @@ class LabelQR:
         FW_yaw = FW_states[0,:]
         FW_Xcg = FW_states[5,:]
         FW_Ycg = FW_states[6,:]
+        self.TMbeta = FW_beta
         self.TMYaw = FW_yaw
+        self.TMXcg = FW_Xcg
+        self.TMYcg = FW_Ycg
 
         #Beta 
 
@@ -103,17 +106,24 @@ class LabelQR:
         
         return {
             "Q" : Q,
+            "TrueMeasureBeta" : self.TMbeta,
             "TrueMeasureYaw" : self.TMYaw,
+            "TrueMeasureXcg" : self.TMXcg,
+            "TrueMeasureYcg" : self.TMYcg,
         }
 
 
 
 
-'''
+
 
 if __name__== "__main__":
     mass_random = np.random.uniform(0,500)
     inertia_random = np.random.uniform(0,100)
     LbQR = LabelQR(mass_random,inertia_random)
-    LbQR.getQ()
-'''
+    values = LbQR.getQ()
+
+    import matplotlib.pyplot as plt
+    plt.figure()
+    plt.plot(values["TrueMeasureBeta"])
+    plt.show()

@@ -3,7 +3,7 @@ import numpy as np
 import sys
 sys.path.insert(0, "/home/asalvi/code_workspace/RL_AdpEst/MachineLearning/VehicleModel/")
 
-from BIcyclemodel_BMW import VehicleModel
+from VDBIcyclemodel_BMW import VehicleModel
 import torch
 
 
@@ -78,7 +78,7 @@ class KalmanFilterWithControl:
         else:
             self.x = np.dot(A, self.x)  # Predict without control
         
-        self.gT = self.x + np.dot(B,np.random.normal(0,self.Q))
+        #self.gT = self.x + np.dot(B,np.random.normal(0,self.Q))
 
         #self.P = np.dot(A, np.dot(self.P, A.T)) + np.dot(B,np.dot(self.Q,B.T))  # Update uncertainty
         multiplier = self.multB

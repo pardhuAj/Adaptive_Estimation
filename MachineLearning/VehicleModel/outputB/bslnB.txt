@@ -1,0 +1,2 @@
+Creating output file.
+Training variant is:bslnB

@@ -1,5 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import sys
+sys.path.insert(0, "/home/asalvi/code_workspace/RL_AdpEst/MachineLearning/VehicleModel/")
 
 class VehicleModel:
     def __init__(self, velocity):
@@ -28,8 +30,8 @@ class VehicleModel:
         self.Fzr = self.m * self.g * self.lf / self.l
         self.Fzr0 = self.Fzr / 2
         self.hcr = self.hcg - (self.hf + (self.lf * (self.hr - self.hf) / self.l))
-        self.cf = 802 * 180 / np.pi  # N/rad
-        self.cr = 785 * 180 / np.pi  # N/rad
+        self.cf = 2*802 * 180 / np.pi  # N/rad
+        self.cr = 2*785 * 180 / np.pi  # N/rad
         self.vel = velocity  # Initial velocity in m/s
 
         #Plant Dynamics
@@ -81,7 +83,7 @@ class VehicleModel:
 
         beta, r, xcg, ycg, psi = x
 
-        betadot = a11 * beta + a12 * r + b11 * delta
+        betadot = a11 * beta + a12 * r + b11 * delta #
         rdot = a21 * beta + a22 * r + b21 * delta
         xcgdot = v * np.cos(beta + psi)
         ycgdot = v * np.sin(beta + psi)
@@ -117,7 +119,7 @@ class VehicleModel:
         alphaf = deltavec - x[1, :] * self.lf / v - x[0, :]
         alphar = x[1, :] * self.lr /v - x[0, :]
         
-        #self.plot_results(time, x, deltavec,alphar,alphaf,v)
+        self.plot_results(time, x, deltavec,alphar,alphaf,v)
 
         return {
             "time": time,
@@ -160,11 +162,11 @@ class VehicleModel:
                 'x Global Coordinate', 'y Global Coordinate', 'Yaw Angle']
         
         for i in range(5):
-            for j in range(2):
-                axs[i, j].plot(time, (x[i * 2 + j, :]))
-                axs[i, j].set_title(titles[i * 2 + j])
-                axs[i, j].set(xlabel='Time (s)')
-                axs[i, j].grid()
+
+            axs[i].plot(time, (x[i,:]))
+            axs[i].set_title(titles[i])
+            axs[i].set(xlabel='Time (s)')
+            axs[i].grid()
         
         plt.tight_layout()
         plt.show()
@@ -191,7 +193,7 @@ class VehicleModel:
 
 
 if __name__ == "__main__":
-    model = VehicleModel(50)
+    model = VehicleModel(25)
     model.run_simulation(1) # Fishhook maneuver
     #model.run_simulation(2) # Constant steering
     #model.run_simulation(3) # Slalom maneuver

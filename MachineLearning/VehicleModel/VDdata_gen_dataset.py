@@ -15,20 +15,22 @@ from matplotlib import pyplot as plt
 
 import sys
 sys.path.insert(0, "/home/asalvi/code_workspace/RL_AdpEst/MachineLearning/VehicleModel/")
-from kalman_filter_control import KalmanFilterWithControl
-from sample_autocorrelation import SampleAutocorrelation 
-from nis_ import NIS
+from VDkalman_filter_control import KalmanFilterWithControl
+from VDsample_autocorrelation import SampleAutocorrelation 
+from VDnis_ import NIS
 
-from Fourwheelmodel_Plots import fourwheel_model
-from BIcyclemodel_BMW import VehicleModel
+from VDFourwheelmodel_Plots import fourwheel_model
+from VDBIcyclemodel_BMW import VehicleModel
+
+from VDlabelQR import LabelQR
 
 
-sys.path.insert(0, "/home/asalvi/code_workspace/RL_AdpEst/MachineLearning/")
-from kalman_filter_control import KalmanFilterWithControl
-from labelQR import LabelQR
+#sys.path.insert(0, "/home/asalvi/code_workspace/RL_AdpEst/MachineLearning/")
+#from kalman_filter_control import KalmanFilterWithControl
+#from VehicleModel.VDlabelQR import LabelQR
 
 class DataGenerator:
-    def __init__(self, num_samples, filter_timesteps=100, n_filters=3):
+    def __init__(self, num_samples, filter_timesteps=100, n_filters=1):
         self.num_samples = num_samples
         self.filter_timesteps = filter_timesteps
         self.n_filters = n_filters
@@ -36,7 +38,7 @@ class DataGenerator:
     def generate_single_sample(self):
         """Generates one data sample with true and simulated measurements."""
         # Random Q_true and R_true
-        Q_true = np.random.uniform(0, 2)
+        #Q_true = np.random.uniform(0, 2)
         #Here we get Q with this:
         
         mass_random = np.random.uniform(0,500)
@@ -44,17 +46,26 @@ class DataGenerator:
         LbQR = LabelQR(mass_random,inertia_random)
         values = LbQR.getQ()
         Q_true = values["Q"] #Label Q
+        #print(Q_true)
         R_true = np.random.uniform(0, 1) #Label R
 
         true_measurements = values["TrueMeasureYaw"] + np.sqrt(R_true)*np.random.normal(0,1,size=len(values["TrueMeasureYaw"]))
-        
+
+        plant_yawrate = values["TrueMeasureYaw"] 
+        plant_beta = values["TrueMeasureBeta"] 
+        plant_Xcg = values["TrueMeasureXcg"] 
+        plant_Ycg = values["TrueMeasureYcg"]
+
+        Qa_dummy = np.random.uniform(0,0.1) 
+        Qb_dummy = np.random.uniform(0,0.1)
+        R_dummy = np.random.uniform(0,0.3)
 
         # Initialize Kalman filter for ground truth measurements
         kf_true = KalmanFilterWithControl(
             x0=np.array([0, 0]), 
             P0=np.array([[1, 0], [0, 1]]), 
-            Q=Q_true, 
-            R=R_true, 
+            Q=np.diag([Qa_dummy,Qb_dummy]), 
+            R=R_dummy, 
             dt=0.01
         )
 
@@ -68,14 +79,21 @@ class DataGenerator:
 
 
         return {
-            "true_measurements": true_measurements[:100],
+            "true_measurements": true_measurements,
             "residual_measurements": residual_measurements,
             "Qa_true": Q_true[0,0],
             "Qb_true": Q_true[1,1],
             "R_true": R_true,
+            "plant_yawrate" : plant_yawrate,
+            "plant_beta" : plant_beta,
+            "plant_Xcg" : plant_Xcg,
+            "plant_Ycg" : plant_Ycg,
+            "Qa_dummy" : Qa_dummy,
+            "Qb_dummy" : Qb_dummy,
+            "R_dummy" : R_dummy,
         }
 
-    def generate_dataset(self, save_path="vehicle_dataset.pkl"):
+    def generate_dataset(self, save_path="vehicle_datasetB.pkl"):
         """Generates and saves the dataset."""
         dataset = []
         

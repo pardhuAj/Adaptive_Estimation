@@ -1,0 +1,3 @@
+Creating output file.
+Training variant is:bslnBStarting Training for 50 epochs...
+Epoch 1/50 - Avg Loss: 0.013541 - Time: 261.78s

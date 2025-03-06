@@ -5,14 +5,60 @@ import pickle
 import pandas as pd
 import numpy as np
 from torch.utils.data import Dataset, DataLoader
+import os
 
 import time
 
 import sys
-sys.path.insert(0, "/home/asalvi/code_workspace/RL_AdpEst/MachineLearning/VehicleModel/")
-from kalman_filter_control import KalmanFilterWithControl
-from sample_autocorrelation import SampleAutocorrelation 
-from nis_ import NIS
+
+
+#update module paths
+#sys.path.insert(0, "/scratch/asalvi/RL_AdpEst/MachineLearning/VehicleModel/") # Cluster
+sys.path.insert(0, "/home/asalvi/code_workspace/RL_AdpEst/MachineLearning/VehicleModel/") # Local Machine
+from VDkalman_filter_control import KalmanFilterWithControl
+from VDsample_autocorrelation import SampleAutocorrelation 
+from VDnis_ import NIS
+
+import argparse
+
+# Argument parser setup
+parser = argparse.ArgumentParser(description="Train KalmanNet Model")
+
+# Add arguments for parameters
+parser.add_argument("--var", type=str, required=True, help="Variable name for output files")
+parser.add_argument("--W1", type=float, required=True, help="Weight for MSE loss")
+parser.add_argument("--W2", type=float, required=True, help="Weight for Sample Autocorrelation loss")
+parser.add_argument("--W3", type=float, required=True, help="Weight for NIS loss")
+parser.add_argument("--epochs", type=int, default=50, help="Number of training epochs")
+parser.add_argument("--dataset", type=str, default="kalman_dataset.pkl", help="Path to dataset")
+
+# Parse arguments
+args = parser.parse_args()
+
+# Assign values
+var = args.var
+W1 = args.W1
+W2 = args.W2
+W3 = args.W3
+epochs = args.epochs
+dataset_path = args.dataset
+
+# Output File paths (Cluster)
+#output_dir = "/scratch/asalvi/RL_AdpEst/MachineLearning/VehicleModel/outputB/"
+
+# Output File paths (Local Machine)
+output_dir = "/home/asalvi/code_workspace/RL_AdpEst/MachineLearning/VehicleModel/outputB/"
+os.makedirs(output_dir, exist_ok=True)
+policy_name = output_dir + f"{var}_kalman_nn.pth"
+validation_csv_name = output_dir + f"{var}_csv_validation.csv"
+log_file = output_dir + f"{var}.txt"
+
+try:
+    with open(log_file, "w") as file:
+        file.write("Creating output file.\n")
+        file.write(f"Training variant is:{var}")
+except Exception as e:
+    print(f"An error occurred: {e}")
 
 class KalmanDataset(Dataset):
     def __init__(self, dataset_path):
@@ -26,13 +72,19 @@ class KalmanDataset(Dataset):
         sample = self.data[idx]
 
         # Convert NumPy lists to NumPy arrays before converting to tensor
-        true_measurements = torch.tensor(np.array(sample["true_measurements"]), dtype=torch.float32).squeeze()
+        true_measurements = torch.tensor(np.array(sample["true_measurements"][:100]), dtype=torch.float32).squeeze()
         #print(true_measurements.shape)
-        residual_measurements = torch.tensor(np.array(sample["residual_measurements"]), dtype=torch.float32).squeeze()
+        residual_measurements = torch.tensor(np.array(sample["residual_measurements"][:100]), dtype=torch.float32).squeeze()
         #print(residual_measurements.shape)
 
+
+        dummyQa = torch.tensor(sample["Qa_dummy"], dtype=torch.float32).unsqueeze(0)
+        dummyQb = torch.tensor(sample["Qb_dummy"], dtype=torch.float32).unsqueeze(0)
+        dummyR = torch.tensor(sample["R_dummy"], dtype=torch.float32).unsqueeze(0)
+
+
         # Concatenate inputs
-        inputs = torch.cat([true_measurements, residual_measurements])
+        inputs = torch.cat([true_measurements, residual_measurements, dummyQa, dummyQb, dummyR])
 
         # Targets (Q_true, R_true)
         target = torch.tensor([sample["Qa_true"],sample["Qb_true"], sample["R_true"]], dtype=torch.float32)
@@ -40,7 +92,7 @@ class KalmanDataset(Dataset):
         return inputs, target
 
 class KalmanNet(nn.Module):
-    def __init__(self, input_size=200, hidden_size=128):
+    def __init__(self, input_size=203, hidden_size=128):
         super(KalmanNet, self).__init__()
         self.fc1 = nn.Linear(input_size, hidden_size)
         self.fc2 = nn.Linear(hidden_size, hidden_size)
@@ -54,9 +106,11 @@ class KalmanNet(nn.Module):
 
 
 # Training Function with Physics-Informed Loss
-def train_model(dataset_path, epochs=10, batch_size=128, lr=0.001):
+def train_model(dataset_path, var,log_file, policy_name, epochs, batch_size=128, lr=0.001):
 
-    print(f"Starting Training for {epochs} epochs...\n")
+    #log_file = f"{var}.txt"
+    with open(log_file, "a") as f:
+        f.write(f"Starting Training for {epochs} epochs...\n")
 
     dataset = KalmanDataset(dataset_path)
     dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
@@ -115,7 +169,7 @@ def train_model(dataset_path, epochs=10, batch_size=128, lr=0.001):
             NIS_ = torch.tensor(NIS_, dtype=torch.float32, device=inputs.device)
 
             # Compute Total Loss
-            total_loss_value = mse_loss + 0.1 * J_ + 0.1 * NIS_
+            total_loss_value = (W1 * mse_loss) + (W2 * J_) + (W3 * NIS_)
             total_loss_value.backward()
             optimizer.step()
             
@@ -123,14 +177,22 @@ def train_model(dataset_path, epochs=10, batch_size=128, lr=0.001):
 
             # Print intermediate progress every 10 batches
             if batch_idx % 10 == 0:
-                print(f"  Batch {batch_idx}/{len(dataloader)} - Loss: {total_loss_value.item():.6f} - Time: {time.time() - batch_start:.2f}s")
+                log_file = f"{var}.txt"
+                with open(log_file, "a") as f:
+                    #f.write(f"Epoch {"  Batch {batch_idx}/{len(dataloader)} - Loss: {total_loss_value.item():.6f} - Time: {time.time() - batch_start:.2f}s")
+                    f.write(f"  Batch {batch_idx}/{len(dataloader)} - Loss: {total_loss_value.item():.6f} - Time: {time.time() - batch_start:.2f}s")
 
 
         epoch_time = time.time() - start_time  # Calculate time per epoch
-        print(f"Epoch {epoch+1}/{epochs} - Avg Loss: {total_loss / len(dataloader):.6f} - Time: {epoch_time:.2f}s\n")
+        #print(f"Epoch {epoch+1}/{epochs} - Avg Loss: {total_loss / len(dataloader):.6f} - Time: {epoch_time:.2f}s\n")
+        #log_file = f"{var}.txt"
+        with open(log_file, "a") as f:
+            f.write(f"Epoch {epoch+1}/{epochs} - Avg Loss: {total_loss / len(dataloader):.6f} - Time: {epoch_time:.2f}s\n")
 
-    torch.save(model.state_dict(), "bsln_kalman_nn.pth")
-    print("Model saved as bsln_kalman_nn.pth")
+    torch.save(model.state_dict(), policy_name)
+    #log_file = f"{var}.txt"
+    with open(log_file, "a") as f:
+        f.write(f"Model saved as {var}_kalman_nn.pth")
 
 # Validation Function
 def validate_model(dataset_path, model_path, output_csv, num_samples=100):
@@ -166,5 +228,5 @@ def validate_model(dataset_path, model_path, output_csv, num_samples=100):
             break  # Only process the first batch
 
 if __name__ == "__main__":
-    train_model("vehicle_dataset.pkl", epochs=20)
-    validate_model("vehicle_dataset.pkl", "bsln_kalman_nn.pth","bsln_validation.csv")
+    train_model("vehicle_datasetB.pkl", var, log_file, policy_name , epochs)
+    validate_model("vehicle_datasetB.pkl", policy_name ,validation_csv_name)

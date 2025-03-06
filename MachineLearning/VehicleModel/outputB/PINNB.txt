@@ -1,0 +1,28 @@
+Creating output file.
+Training variant is:PINNBStarting Training for 25 epochs...
+Epoch 1/25 - Avg Loss: 0.015443 - Time: 220.95s
+Epoch 2/25 - Avg Loss: 0.003920 - Time: 220.27s
+Epoch 3/25 - Avg Loss: 0.003421 - Time: 220.39s
+Epoch 4/25 - Avg Loss: 0.004584 - Time: 220.17s
+Epoch 5/25 - Avg Loss: 0.004428 - Time: 220.16s
+Epoch 6/25 - Avg Loss: 0.002908 - Time: 220.40s
+Epoch 7/25 - Avg Loss: 0.003574 - Time: 220.38s
+Epoch 8/25 - Avg Loss: 0.003427 - Time: 220.13s
+Epoch 9/25 - Avg Loss: 0.003397 - Time: 220.16s
+Epoch 10/25 - Avg Loss: 0.004047 - Time: 220.11s
+Epoch 11/25 - Avg Loss: 0.004115 - Time: 220.04s
+Epoch 12/25 - Avg Loss: 0.002604 - Time: 220.07s
+Epoch 13/25 - Avg Loss: 0.003392 - Time: 220.09s
+Epoch 14/25 - Avg Loss: 0.002583 - Time: 220.46s
+Epoch 15/25 - Avg Loss: 0.003067 - Time: 220.43s
+Epoch 16/25 - Avg Loss: 0.004321 - Time: 220.22s
+Epoch 17/25 - Avg Loss: 0.003049 - Time: 220.46s
+Epoch 18/25 - Avg Loss: 0.001857 - Time: 220.31s
+Epoch 19/25 - Avg Loss: 0.004599 - Time: 220.04s
+Epoch 20/25 - Avg Loss: 0.003154 - Time: 220.21s
+Epoch 21/25 - Avg Loss: 0.005461 - Time: 220.18s
+Epoch 22/25 - Avg Loss: 0.002882 - Time: 220.39s
+Epoch 23/25 - Avg Loss: 0.001760 - Time: 220.12s
+Epoch 24/25 - Avg Loss: 0.002215 - Time: 220.37s
+Epoch 25/25 - Avg Loss: 0.002832 - Time: 220.32s
+Model saved as PINNB_kalman_nn.pth

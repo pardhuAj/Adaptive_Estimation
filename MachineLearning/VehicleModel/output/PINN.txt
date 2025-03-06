@@ -1,0 +1,27 @@
+Starting Training for 25 epochs...
+Epoch 1/25 - Avg Loss: 0.013736 - Time: 314.93s
+Epoch 2/25 - Avg Loss: 0.004369 - Time: 298.78s
+Epoch 3/25 - Avg Loss: 0.004004 - Time: 297.60s
+Epoch 4/25 - Avg Loss: 0.003325 - Time: 299.94s
+Epoch 5/25 - Avg Loss: 0.002517 - Time: 298.01s
+Epoch 6/25 - Avg Loss: 0.004353 - Time: 298.28s
+Epoch 7/25 - Avg Loss: 0.002981 - Time: 298.05s
+Epoch 8/25 - Avg Loss: 0.003695 - Time: 297.87s
+Epoch 9/25 - Avg Loss: 0.004113 - Time: 297.66s
+Epoch 10/25 - Avg Loss: 0.004074 - Time: 298.53s
+Epoch 11/25 - Avg Loss: 0.002052 - Time: 297.77s
+Epoch 12/25 - Avg Loss: 0.003421 - Time: 297.68s
+Epoch 13/25 - Avg Loss: 0.002121 - Time: 297.35s
+Epoch 14/25 - Avg Loss: 0.002653 - Time: 298.11s
+Epoch 15/25 - Avg Loss: 0.003306 - Time: 298.12s
+Epoch 16/25 - Avg Loss: 0.003175 - Time: 298.78s
+Epoch 17/25 - Avg Loss: 0.003761 - Time: 298.11s
+Epoch 18/25 - Avg Loss: 0.002347 - Time: 297.70s
+Epoch 19/25 - Avg Loss: 0.005016 - Time: 297.57s
+Epoch 20/25 - Avg Loss: 0.002659 - Time: 297.63s
+Epoch 21/25 - Avg Loss: 0.002493 - Time: 297.86s
+Epoch 22/25 - Avg Loss: 0.002358 - Time: 298.34s
+Epoch 23/25 - Avg Loss: 0.005538 - Time: 298.12s
+Epoch 24/25 - Avg Loss: 0.003624 - Time: 298.21s
+Epoch 25/25 - Avg Loss: 0.002942 - Time: 298.20s
+Model saved as PINN_kalman_nn.pth
