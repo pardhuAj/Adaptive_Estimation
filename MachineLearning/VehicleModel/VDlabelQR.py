@@ -8,8 +8,8 @@ import numpy as np
 from torch.utils.data import Dataset, DataLoader
 from matplotlib import pyplot as plt
 
-import sys
-sys.path.insert(0, "/home/asalvi/code_workspace/RL_AdpEst/MachineLearning/VehicleModel/")
+#import sys
+#sys.path.insert(0, "/home/asalvi/code_workspace/RL_AdpEst/MachineLearning/VehicleModel/")
 from VDkalman_filter_control import KalmanFilterWithControl
 from VDsample_autocorrelation import SampleAutocorrelation 
 from VDnis_ import NIS
@@ -111,8 +111,6 @@ class LabelQR:
             "TrueMeasureXcg" : self.TMXcg,
             "TrueMeasureYcg" : self.TMYcg,
         }
-
-
 
 
 

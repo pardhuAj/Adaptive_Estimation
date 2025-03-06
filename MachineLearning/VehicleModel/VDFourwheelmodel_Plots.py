@@ -1,6 +1,6 @@
 import numpy as np
 import sys
-sys.path.insert(0, "/home/asalvi/code_workspace/RL_AdpEst/MachineLearning/VehicleModel/")
+#sys.path.insert(0, "/home/asalvi/code_workspace/RL_AdpEst/MachineLearning/VehicleModel/")
 from nonlintire import nonlintire
 import matplotlib.pyplot as plt
 
