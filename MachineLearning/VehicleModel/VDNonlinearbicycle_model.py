@@ -174,5 +174,5 @@ class VehicleModel:
 if __name__ == "__main__":
     model = VehicleModel(50/2)
     #model.run_simulation(1) # Fishhook maneuver
-    model.run_simulation(2) # Constant steering
+    model.run_simulation(1) # Constant steering
     #model.run_simulation(3) # Slalom maneuver

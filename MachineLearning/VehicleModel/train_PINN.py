@@ -47,7 +47,7 @@ dataset_path = args.dataset
 #output_dir = "/scratch/asalvi/RL_AdpEst/MachineLearning/VehicleModel/outputB/"
 
 # Output File paths (Local Machine)
-output_dir = "/home/asalvi/code_workspace/RL_AdpEst/MachineLearning/VehicleModel/outputB/"
+output_dir = "/home/asalvi/code_workspace/RL_AdpEst/MachineLearning/VehicleModel/outputC/"
 os.makedirs(output_dir, exist_ok=True)
 policy_name = output_dir + f"{var}_kalman_nn.pth"
 validation_csv_name = output_dir + f"{var}_csv_validation.csv"
@@ -73,9 +73,9 @@ class KalmanDataset(Dataset):
 
         # Convert NumPy lists to NumPy arrays before converting to tensor
         true_measurements = torch.tensor(np.array(sample["true_measurements"][:100]), dtype=torch.float32).squeeze()
-        #print(true_measurements.shape)
+        #print(f"shape true measurements : {true_measurements.shape}")
         residual_measurements = torch.tensor(np.array(sample["residual_measurements"][:100]), dtype=torch.float32).squeeze()
-        #print(residual_measurements.shape)
+        #print(f"shape residual measurements : {residual_measurements.shape}")
 
 
         dummyQa = torch.tensor(sample["Qa_dummy"], dtype=torch.float32).unsqueeze(0)
@@ -85,9 +85,11 @@ class KalmanDataset(Dataset):
 
         # Concatenate inputs
         inputs = torch.cat([true_measurements, residual_measurements, dummyQa, dummyQb, dummyR])
+        #print(f"inputs:{inputs.shape}")
 
         # Targets (Q_true, R_true)
         target = torch.tensor([sample["Qa_true"],sample["Qb_true"], sample["R_true"]], dtype=torch.float32)
+        #print(f"target:{target.shape}")
 
         return inputs, target
 
@@ -228,5 +230,16 @@ def validate_model(dataset_path, model_path, output_csv, num_samples=100):
             break  # Only process the first batch
 
 if __name__ == "__main__":
-    train_model("vehicle_datasetB.pkl", var, log_file, policy_name , epochs)
-    validate_model("vehicle_datasetB.pkl", policy_name ,validation_csv_name)
+    train_model("vehicle_dataset_Bicycle.pkl", var, log_file, policy_name , epochs)
+    validate_model("vehicle_dataset_Bicycle.pkl", policy_name ,validation_csv_name)
+
+    
+    '''
+    # Load the dataset
+    dataset_path = "random.pkl"
+    with open(dataset_path, "rb") as f:
+        data = pickle.load(f)
+
+    # Print the first sample
+    print(data[0])  # or any other index to check a different sample
+    '''

@@ -1,7 +1,7 @@
 import numpy as np
 
-import sys
-sys.path.insert(0, "/home/asalvi/code_workspace/RL_AdpEst/MachineLearning/VehicleModel/")
+#import sys
+#sys.path.insert(0, "/home/asalvi/code_workspace/RL_AdpEst/MachineLearning/VehicleModel/")
 
 from VDBIcyclemodel_BMW import VehicleModel
 import torch
@@ -47,8 +47,9 @@ class KalmanFilterWithControl:
         B : np.array
             Control input matrix
         """
+        validation = {"enable" : 0, "cf":0, "cr":0, "validation_cf": 0.5, "validation_cr": 0.5}
         velocity = 25
-        VM = VehicleModel(velocity)
+        VM = VehicleModel(velocity,validation)
         
         #A = np.array([[1, dt], 
         #              [0, 1]])

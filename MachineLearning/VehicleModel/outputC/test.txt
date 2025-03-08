@@ -1,0 +1,8 @@
+Creating output file.
+Training variant is:testStarting Training for 5 epochs...
+Epoch 1/5 - Avg Loss: 0.004895 - Time: 0.23s
+Epoch 2/5 - Avg Loss: 0.000777 - Time: 0.05s
+Epoch 3/5 - Avg Loss: 0.000745 - Time: 0.08s
+Epoch 4/5 - Avg Loss: 0.000691 - Time: 0.08s
+Epoch 5/5 - Avg Loss: 0.000688 - Time: 0.08s
+Model saved as test_kalman_nn.pth

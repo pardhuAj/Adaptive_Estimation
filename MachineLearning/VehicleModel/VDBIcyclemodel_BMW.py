@@ -4,7 +4,7 @@ import sys
 #sys.path.insert(0, "/home/asalvi/code_workspace/RL_AdpEst/MachineLearning/VehicleModel/")
 
 class VehicleModel:
-    def __init__(self, velocity):
+    def __init__(self, velocity, validation):
         # Vehicle Parameters 0f BMW 535 Xi
         self.m = 1740.2  # kg
         self.E = 1.555  # Track width in m
@@ -30,8 +30,19 @@ class VehicleModel:
         self.Fzr = self.m * self.g * self.lf / self.l
         self.Fzr0 = self.Fzr / 2
         self.hcr = self.hcg - (self.hf + (self.lf * (self.hr - self.hf) / self.l))
-        self.cf = 2*802 * 180 / np.pi  # N/rad
-        self.cr = 2*785 * 180 / np.pi  # N/rad
+
+        if validation["enable"] == 1:
+            self.cf = validation["validation_cf"]*(2*802 * 180 / np.pi) + 2*802 * 180 / np.pi  # N/rad #0.12 a constant valued
+        #print(f"cf is:{self.cf}")
+            self.cr = validation["validation_cf"]*(2*785 * 180 / np.pi) + 2*785 * 180 / np.pi  # N/rad #0.13 a constant value
+        else:
+            self.cf = validation["cf"] + 2*802 * 180 / np.pi  # N/rad
+            #print(f"cf is:{self.cf}")
+            self.cr = validation["cr"] + 2*785 * 180 / np.pi  # N/rad
+
+
+
+        #print(f"cr is:{self.cr}")
         self.vel = velocity  # Initial velocity in m/s
 
         #Plant Dynamics
@@ -119,7 +130,7 @@ class VehicleModel:
         alphaf = deltavec - x[1, :] * self.lf / v - x[0, :]
         alphar = x[1, :] * self.lr /v - x[0, :]
         
-        self.plot_results(time, x, deltavec,alphar,alphaf,v)
+        #self.plot_results(time, x, deltavec,alphar,alphaf,v)
 
         return {
             "time": time,
@@ -194,6 +205,16 @@ class VehicleModel:
 
 if __name__ == "__main__":
     model = VehicleModel(25)
-    model.run_simulation(1) # Fishhook maneuver
+    run1 = model.run_simulation(1) # Fishhook maneuver
+    beta_1 = np.array(run1["x"])
+
+    model = VehicleModel(25)
+    run2 = model.run_simulation(1) # Fishhook maneuver
+    beta_2 = np.array(run2["x"])
+
+    plt.figure()
+    plt.plot(beta_1[1,:] - beta_2[1,:])
+    plt.show()
+
     #model.run_simulation(2) # Constant steering
     #model.run_simulation(3) # Slalom maneuver

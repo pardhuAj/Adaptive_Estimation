@@ -14,59 +14,73 @@ from VDkalman_filter_control import KalmanFilterWithControl
 from VDsample_autocorrelation import SampleAutocorrelation 
 from VDnis_ import NIS
 
-from VDFourwheelmodel_Plots import fourwheel_model
+#from VDFourwheelmodel_Plots import fourwheel_model
 from VDBIcyclemodel_BMW import VehicleModel
 
 class LabelQR:
-    def __init__(self,MassRand,InertiaRand):
-        self.randM = MassRand
-        self.randIz = InertiaRand
-        self.TMYaw  = None
+    def __init__(self,k,validate):
+        #self.randM = MassRand
+        #self.randIz = InertiaRand
+        #self.TMYaw  = None
+        self.k = k
+        self.validate = validate
 
 
     def compare(self):
 
         velocity = 25 #25 m/s
-        maneuver_type = 1 #1:Fishook 2:skidpad 3:Slalom
+        #maneuver_type = 1 #1:Fishook 2:skidpad 3:Slalom
         # Simulate Plant model with randomization
         
         #print(f"Rand M is:{randM}")
         #print(f"Rand Iz is:{randIz}")
-        modelFW = fourwheel_model(velocity,self.randM,self.randIz)
-        FWManeuver = modelFW.run_simulation(maneuver_type)
+        validation = {"enable" : self.validate, "cf":np.random.uniform(0,0.15)*(2*802 * 180 / np.pi), "cr":np.random.uniform(0,0.15)*(2*802 * 180 / np.pi), "validation_cf": 0.5, "validation_cr": 0.5 }
+        modelNominal = VehicleModel(velocity, validation)
+        maneuver_type = np.random.randint(low = 1,high=4)
+        NmManeuver = modelNominal.run_simulation(maneuver_type)
         
-        FW_states = np.array(FWManeuver["x"])
+        NM_states = np.array(NmManeuver["x"])
         #print(FW_states.shape)
 
-        FW_beta = FW_states[1,:]
+        NM_beta = NM_states[0,:]
         #print(FW_beta)
-        FW_yaw = FW_states[0,:]
-        FW_Xcg = FW_states[5,:]
-        FW_Ycg = FW_states[6,:]
-        self.TMbeta = FW_beta
-        self.TMYaw = FW_yaw
-        self.TMXcg = FW_Xcg
-        self.TMYcg = FW_Ycg
+        NM_yawRate = NM_states[1,:]
+        NM_Xcg = NM_states[2,:]
+        NM_Ycg = NM_states[3,:]
+        self.Truebeta = NM_beta
+        self.TrueYawRate = NM_yawRate
+        self.TrueXcg = NM_Xcg
+        self.TrueYcg = NM_Ycg
+
+
+        
 
         #Beta 
-
-        modelBicyle = VehicleModel(velocity)
+        validation = {"enable" : self.validate, "cf":0, "cr":0, "validation_cf": 0.5, "validation_cr": 0.5}
+        modelBicyle = VehicleModel(velocity, validation)
         BicyleManeuver = modelBicyle.run_simulation(maneuver_type) 
 
         Bi_states = np.array(BicyleManeuver["x"])
 
         Bi_beta = Bi_states[0,:]
-        Bi_yaw = Bi_states[1,:]
+        Bi_yawRate = Bi_states[1,:]
         Bi_Xcg = Bi_states[2,:]
         Bi_Ycg = Bi_states[3,:]
 
-        error_beta = FW_beta - Bi_beta
-        error_yaw = FW_yaw - Bi_yaw
+        #k = np.random.randint(low = 1, high = 1500)
+        #self.k = k
+        self.TrueMeasureYawRate = Bi_yawRate[self.k:self.k+100] #A non-varyng model to which Q and R will be added 
+
+        #error_beta = NM_beta[self.k:self.k+100] - Bi_beta[self.k:self.k+100]
+        #error_yaw = NM_yawRate[self.k:self.k+100] - Bi_yawRate[self.k:self.k+100]
+
+        error_beta = NM_beta- Bi_beta
+        error_yaw = NM_yawRate - Bi_yawRate
 
 
         return {
             "error_beta" : error_beta,
-            "error_yaw" : error_yaw,
+            "error_yawRate" : error_yaw,
         }
 
         '''
@@ -98,7 +112,7 @@ class LabelQR:
         # Compute Gaussian parameters (mean and variance)
         eps = 1e-6  # Small value for numerical stability
         Q_beta_var = np.var(errors["error_beta"]) + eps
-        Q_yaw_var = np.var(errors["error_yaw"]) + eps
+        Q_yaw_var = np.var(errors["error_yawRate"]) + eps
 
         # Return Q as a diagonal covariance matrix
         Q = np.diag([Q_beta_var, Q_yaw_var])
@@ -106,22 +120,43 @@ class LabelQR:
         
         return {
             "Q" : Q,
-            "TrueMeasureBeta" : self.TMbeta,
-            "TrueMeasureYaw" : self.TMYaw,
-            "TrueMeasureXcg" : self.TMXcg,
-            "TrueMeasureYcg" : self.TMYcg,
+            "TrueBeta" : self.Truebeta,
+            "TrueYawRate" : self.TrueYawRate,
+            "TrueXcg" : self.TrueXcg,
+            "TrueYcg" : self.TrueYcg,
+            "TrueMeasureYawRate" : self.TrueMeasureYawRate, #these are randomly drawn 100 samples for training dataset
+            "k" : self.k, #these are where the samples begin
         }
 
 
 
 
 if __name__== "__main__":
-    mass_random = np.random.uniform(0,500)
-    inertia_random = np.random.uniform(0,100)
-    LbQR = LabelQR(mass_random,inertia_random)
-    values = LbQR.getQ()
 
-    import matplotlib.pyplot as plt
-    plt.figure()
-    plt.plot(values["TrueMeasureBeta"])
-    plt.show()
+    '''
+    
+    for _ in range(1):
+        LbQR = LabelQR()
+        values = LbQR.getQ()
+        Q = values["Q"]
+        print(f" Q is : {Q} of the size {Q.shape}")
+        TrueBeta = values["TrueBeta"]
+        print(f"TrueBeta is : {TrueBeta} of the size {TrueBeta.shape}")
+        TrueYawRate = values["TrueYawRate"]
+        print(f"TrueYawRate is : {TrueYawRate} of the size {TrueYawRate.shape}")
+        TrueXcg = values["TrueXcg"]
+        print(f"TrueXcg is : {TrueXcg} of the size {TrueXcg.shape}")
+        TrueYcg = values["TrueYcg"]
+        print(f"TrueYcg is : {TrueYcg} of the size {TrueYcg.shape}")
+        TrueMeasureYawRate = values["TrueMeasureYawRate"]
+        print(f"TrueMeasureYawRate is {TrueMeasureYawRate} of the size {TrueMeasureYawRate.shape}")
+        k = values["k"]
+        print(f"k is : {k}")
+
+    '''
+
+
+    #import matplotlib.pyplot as plt
+    #plt.figure()
+    #plt.plot(values["TrueMeasureBeta"])
+    #plt.show()
