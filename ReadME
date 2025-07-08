@@ -1,2 +1,5 @@
 # Physics-constrained learning of stochastic characteristics
 
+Accurate state estimation requires careful consideration of uncertainty surrounding the process and measurement models; these characteristics are usually not well-known and need an experienced designer to select the covariance matrices. An error in the selection of covariance matrices could impact the accuracy of the estimation algorithm and may sometimes cause the filter to diverge. Identifying noise characteristics has long been a challenging problem due to uncertainty surrounding noise sources and difficulties in systematic noise modeling. Most existing approaches try to identify unknown covariance matrices through an optimization algorithm involving innovation sequences. In recent years, learning approaches have been utilized to determine the stochastic characteristics of process and measurement models. We present a learning-based methodology with different loss functions to identify noise characteristics and test these approaches' performance for real-time vehicle state estimation.
+
+
