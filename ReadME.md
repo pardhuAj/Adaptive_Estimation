@@ -7,4 +7,4 @@ Accurate state estimation requires careful consideration of uncertainty surround
 ## Overview
 The vehicle motion can be described by different models depending on the level of fidelity required. A 2-DoF motion model describing lateral dynamics through the states, vehicle slip angle and yaw rate [**β**, $\dot{\psi}$]. A linear tire model, [F = C * α], with the cornering stiffness per axle, is used to model terrain-tire interaction and describe the dynamics of vehicle motion (\ref{eq:contdyn}). The discretized version of the bicycle model with nominal cornering stiffness is used for propagation and update of estimated states based on the measurement data.
 
-![Bicycle model](Images/bicycleModel.eps)
+![Bicycle model](Images/bicycleModel.jpg)
