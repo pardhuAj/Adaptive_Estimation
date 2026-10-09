@@ -24,8 +24,14 @@ The study estimates vehicle sideslip angle **β** and yaw rate **r** using a nom
 </p>
 
 The predictor estimates three variances:
-
-$$Q_k=\operatorname{diag}(Q_{a,k},Q_{b,k}),\qquad R_k=[R_k].$$
+$$
+Q_k =
+\begin{bmatrix}
+Q_{a,k} & 0 \\
+0 & Q_{b,k}
+\end{bmatrix},
+\qquad R_k = [R_k].
+$$
 
 Here, **Qₐ** and **Qᵦ** correspond to the sideslip and yaw-rate process noise, respectively. The paper uses histories of 100 measurements and innovations, plus previous covariance estimates.
 
